@@ -1,7 +1,3 @@
-# CSCE 314: Programming Languages, Homework 5, hw5graphics.rb
-
-# This file provides an interface to a wrapped Tk library.
-
 require 'tk'
 
 class TetrisRoot

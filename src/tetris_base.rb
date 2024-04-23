@@ -1,6 +1,3 @@
-# CSCE 314: Programming Languages
-# Homework 5: A working Tetris game you will extend without breaking.
-
 require_relative './tetris_graphics'
 
 # class responsible for the pieces and their movements

@@ -1,7 +1,3 @@
-# CSCE 314: Programming Languages, Homework 5, hw5assignment.rb
-
-# This is the only file you turn in, so do not modify the other files as
-# part of your solution.
 class MyPiece < Piece
   def self.next_piece(board)
     if $var
