@@ -1,6 +1,6 @@
 # Tetris game 
 
-
+![Demonstration gif of the tetris game](./tetris.gif)
 
 This project was created with intentions to learn more about advanced Object-Oriented Programming principles: 
 - Dynamic dispatch
