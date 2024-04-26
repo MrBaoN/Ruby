@@ -1,3 +1,6 @@
+
+
+
 class MyPiece < Piece
   def self.next_piece(board)
     if $var
@@ -88,10 +91,13 @@ class MyTetrisChallenge < MyTetris
   def set_board
     @canvas = TetrisCanvas.new
     @display_next = TetrisCanvas.new
+    @display_hold = TetrisCanvas.new
+    @hold_flag = false
     @board = MyBoardChallenge.new(self, @data)
-    @canvas.place(@board.block_size * @board.num_rows + 3,
+    @canvas.place(@board.block_size * @board.num_rows,
                   @board.block_size * @board.num_columns + 6, 24, 100)
     @display_next.place(@board.block_size* 6, @board.block_size * 6,195,100)
+    @display_hold.place(@board.block_size* 6, @board.block_size * 6, 195, 230)
     @board.draw
   end
 
@@ -104,10 +110,26 @@ class MyTetrisChallenge < MyTetris
     start = [2,2]
     blocks.map{|block|
     TetrisRect.new(@display_next, start[0]*size + block[0]*size,
-                                start[1]*size + block[1]*size,
-                                start[0]*size + size + block[0]*size,
-                                start[1]*size + size + block[1]*size,
-                                piece.color)}
+                                  start[1]*size + block[1]*size,
+                                  start[0]*size + size + block[0]*size,
+                                  start[1]*size + size + block[1]*size,
+                                  piece.color)}
+  end
+
+  def draw_hold (piece, old = nil)
+    if old != nil
+      old.each{|block| block.remove}
+    end
+
+    size = @board.block_size
+    blocks = piece.current_rotation
+    start = [2,2]
+    blocks.map{|block|
+    TetrisRect.new(@display_hold, start[0]*size + block[0]*size,
+                                  start[1]*size + block[1]*size,
+                                  start[0]*size + size + block[0]*size,
+                                  start[1]*size + size + block[1]*size,
+                                  piece.color)}
   end
 
   def key_bindings
@@ -115,6 +137,8 @@ class MyTetrisChallenge < MyTetris
     @root.bind('r', proc {self.new_game})
     @root.bind('s', proc {@board.lowering})
     @root.bind('Down', proc {@board.lowering})
+    @root.bind('e', proc {@board.hold})
+    @root.bind('/', proc {@board.hold})
   end
 
   def buttons
@@ -129,6 +153,9 @@ class MyTetrisChallenge < MyTetris
 
     move_left = TetrisButton.new('left', 'lightgreen'){@board.move_left}
     move_left.place(35, 50, 27, 571)
+
+    hold = TetrisButton.new('hold', 'lightgreen'){@board.hold}
+    hold.place(35, 50, 127, 542)
 
     move_right = TetrisButton.new('right', 'lightgreen'){@board.move_right}
     move_right.place(35, 50, 127, 571)
@@ -155,6 +182,20 @@ class MyTetrisChallenge < MyTetris
     end
 
     highscorelabel.place(20, 100, 33, 50)
+
+    next_piece = TetrisLabel.new(@root) do
+      text 'Next'
+      background 'lightblue'
+    end
+
+    next_piece.place(20, 100, 190, 80)
+
+    hold = TetrisLabel.new(@root) do
+      text 'Hold'
+      background 'lightblue'
+    end
+
+    hold.place(20, 100, 190, 210)
 
     @highscore = TetrisLabel.new(@root) do
       background 'lightblue'
@@ -187,6 +228,10 @@ end
 
 class MyPieceChallenge < MyPiece
 
+  def base_position= array_position
+    @base_position = array_position
+  end
+
   def accelerate
     if @board.score > 1000
       num = 2
@@ -210,15 +255,6 @@ end
 
 class MyBoardChallenge < MyBoard
 
-  def initialize (point_array, board)
-    @all_rotations = point_array
-    @rotation_index = (0..(@all_rotations.size-1)).to_a.sample
-    @color = All_Colors.sample
-    @base_position = [5, 5] # [column, row]
-    @board = board
-    @moved = true
-  end
-
   def num_rows
     29
   end
@@ -228,6 +264,8 @@ class MyBoardChallenge < MyBoard
     @next_block = MyPieceChallenge.next_piece(self)
     @current_block = MyPieceChallenge.next_piece(self)
     @score = 0
+    @hold_block = nil
+    @hold_flag = false
 
     if File.exist?("highscore.txt")
       @highscore = File.read("highscore.txt").to_i
@@ -243,6 +281,37 @@ class MyBoardChallenge < MyBoard
     @next_pos = @game.draw_next(@next_block, @next_pos)
   end
 
+  def draw_hold
+    @hold_pos = @game.draw_hold(@hold_block, @hold_pos)
+  end
+
+  def hold
+    if @hold_block == nil and !@hold_flag
+      @hold_block = @current_block
+      @current_block = @next_block
+      @current_pos.each{|block| block.remove}
+      @current_block.base_position = [5,0]
+      @next_block = MyPieceChallenge.next_piece(self)
+      @current_pos = nil
+      draw_hold
+      draw_next_piece
+      draw
+      @hold_flag = true
+
+    elsif !@hold_flag
+      temp = @current_block
+      @current_block = @hold_block
+      @current_pos.each{|block| block.remove}
+      @current_block.base_position = [5,0]
+      @hold_block = temp
+      @current_pos = nil
+      draw_hold
+      draw
+      @hold_flag = true
+
+    end
+  end
+
   def next_piece
     @current_block = @next_block
     @next_block = MyPieceChallenge.next_piece(self)
@@ -251,6 +320,11 @@ class MyBoardChallenge < MyBoard
 
   def highscore
     @highscore
+  end
+
+  def store_current
+    super
+    @hold_flag = false
   end
 
   def run
