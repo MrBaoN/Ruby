@@ -2,7 +2,7 @@ require 'tk'
 
 class TetrisRoot
   def initialize
-    @root = TkRoot.new('height' => 650, 'width' => 300, #205
+    @root = TkRoot.new('height' => 650, 'width' => 300,
              'background' => 'lightblue') {title "Tetris"}
   end
 
