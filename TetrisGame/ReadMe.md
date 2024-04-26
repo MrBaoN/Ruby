@@ -22,11 +22,9 @@ In order to run the game, type the command below in the terminal, substituting _
 ```
 
 Control:
-  w             up
- asd  or  left down right
-
- u - rotate 180
- e or / - hold block
- q - quit game
- p - pause
- r or n - new game
+ - wasd or arrow key
+ - u - rotate 180
+ - e or / - hold block
+ - q - quit game
+ - p - pause
+ - r or n - new game
