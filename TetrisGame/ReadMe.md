@@ -21,3 +21,12 @@ In order to run the game, type the command below in the terminal, substituting _
  ruby tetris_runner tetris_type
 ```
 
+Control:
+  w             up
+ asd  or  left down right
+
+ u - rotate 180
+ e or / - hold block
+ q - quit game
+ p - pause
+ r or n - new game
