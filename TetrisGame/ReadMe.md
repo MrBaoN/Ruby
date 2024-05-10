@@ -10,7 +10,7 @@ This project was created with intentions to learn more about advanced Object-Ori
 
 `tetris_base` is implemented with minimal feature to demonstrate effects of **Class Hierarchy** and **Inheritance**.
 
-`tetris_enhanced` contains two subclass: `My_Class` and `My_Challenge_Class` where `My_Challenge_Class` < `My_Class`. This is done to show the seperation between a subclass and its "ancestor" as well as their union via **dynamic dispatch**.
+`tetris_enhanced` contains two subclass: `My_Class` and `My_Challenge_Class` where `My_Challenge_Class` < `My_Class` < `Base class`. This is done to show the **inheritance** as well as **dynamic dispatch** interaction between class.
 
 `tetris_graphic` contains all the necessary graphic in order to run the game
 
@@ -22,9 +22,13 @@ In order to run the game, type the command below in the terminal, substituting _
 ```
 
 Control:
- - `wasd` or `arrow key`
- - `u` - rotate 180
- - `e` or `/` - hold block
- - `q` - quit game
- - `p` - pause
- - `r` or `n` - new game
+- From base class:
+  - `wasd` or `arrow key`
+  - `spacebar`- drop block
+- From enhanced class:
+  - `u` - rotate 180
+- From challenge class:
+  - `e` or `/` - hold block
+  - `q` - quit game
+  - `p` - pause
+  - `r` or `n` - new game
